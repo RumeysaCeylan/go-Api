@@ -1,0 +1,10 @@
+{
+    "products": [
+      {
+        "id": 1,
+        "productName": "Laptop",
+        "categoryId": 1,
+        "unitPrice": 5000.99
+      }
+    ]
+}
