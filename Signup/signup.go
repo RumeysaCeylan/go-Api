@@ -41,19 +41,22 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	rows, _ := db.Query("SELECT * FROM Userr")
 	var login Login
-	login.Id = 3
-	login.FirstName = "Ayşe"
-	login.LastName = "KOÇ"
-	login.Email = "ak@email.com"
-	login.Password = "123456"
+	login.FirstName = r.FormValue("firstName")
+	login.LastName = r.FormValue("lastName")
+	login.Email = r.FormValue("email")
+	login.Password = r.FormValue("password")
+
 	for rows.Next() {
 		rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password)
 	}
 	if login.Email == "" || login.Password == "" {
 		fmt.Println("cannot be empty")
+		fmt.Fprintf(w, "cannot be empty")
 	} else {
 		if user.Email == login.Email {
 			fmt.Fprintf(w, "Email is used")
+			fmt.Println("email is used")
+
 		} else {
 			if CheckEmail(login.Email) && valid.IsValid(w, r) {
 				db.Exec("INSERT INTO Userr(firstName,lastName,email,password) VALUES($1,$2,$3,$4)", login.FirstName, login.LastName, login.Email, login.Password)
