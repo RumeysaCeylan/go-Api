@@ -3,6 +3,7 @@ package postgresql
 import (
 	"database/sql"
 	"fmt"
+	"log"
 )
 
 const (
@@ -19,10 +20,9 @@ func OpenConnention() *sql.DB {
 
 	db, err := sql.Open("postgres", psqlConnection)
 
-	defer db.Close()
-
 	if err != nil {
 		fmt.Println(err)
+		log.Fatal(err)
 	}
 	err = db.Ping()
 	if err != nil {

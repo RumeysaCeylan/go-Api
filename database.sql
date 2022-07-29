@@ -2,17 +2,10 @@
 
 -- DROP TABLE IF EXISTS public."User";
 
-CREATE TABLE IF NOT EXISTS public."User"
-(
-    "Id" bigint NOT NULL,
-    "firstName" "char",
-    "lastName" "char",
-    "email" "char" NOT NULL,
-    "Password" "char" NOT NULL,
-    CONSTRAINT "User_pkey" PRIMARY KEY ("Id")
-)
-
-TABLESPACE pg_default;
-
-ALTER TABLE IF EXISTS public."User"
-    OWNER to postgres;
+CREATE TABLE Userr (
+    id SERIAL PRIMARY KEY,
+    firstName VARCHAR(100) NULL,
+    lastName VARCHAR(100) NULL,
+    email VARCHAR(50) NOT NULL,
+    password VARCHAR(100) NOT NULL
+);

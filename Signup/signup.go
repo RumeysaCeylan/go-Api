@@ -5,71 +5,77 @@ import (
 	"fmt"
 	valid "golib/IsValid"
 	"golib/postgresql"
-
 	"net/http"
+
 	"regexp"
 )
 
 //kayıt olmak
-var firstname, lastname, email, password string
+//var firstname, lastname, email, password string
 
 type User struct {
-	Id        int
-	firstName string
-	lastName  string
-	Email     string
-	Password  string
+	Id        int    `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
+
 type Login struct {
-	firstName string
-	lastName  string
-	Email     string
-	Password  string
-}
-type JsonResponse struct {
-	Type    string `json:"type"`
-	Data    []User `json:"data"`
-	Message string `json:"message"`
+	Id        int    `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
 }
 
 var user User
+var lg []Login
 
 func Signup(w http.ResponseWriter, r *http.Request) {
+
 	OpenConnention := postgresql.OpenConnention()
-	var response = JsonResponse{}
+
 	db := OpenConnention
 	r.ParseForm()
+	defer db.Close()
+	rows, _ := db.Query("SELECT * FROM Userr")
 	var login Login
-	login.Password = r.FormValue("password")
-	login.Email = r.FormValue("email")
-	rows, _ := db.Query("SELECT * FROM User")
+	login.Id = 3
+	login.FirstName = "Ayşe"
+	login.LastName = "KOÇ"
+	login.Email = "ak@email.com"
+	login.Password = "123456"
 	for rows.Next() {
-		rows.Scan(&user.Id, &user.firstName, &user.lastName, &user.Email, &user.Password)
+		rows.Scan(&user.Id, &user.FirstName, &user.LastName, &user.Email, &user.Password)
 	}
-	if login.Email == "" || password == "" {
-		fmt.Fprintf(w, "cannot be empty")
+	if login.Email == "" || login.Password == "" {
+		fmt.Println("cannot be empty")
 	} else {
 		if user.Email == login.Email {
-			fmt.Fprintf(w, "email is used")
+			fmt.Fprintf(w, "Email is used")
 		} else {
-			if CheckEmail(login.Email) == true {
-				db.Exec("INSERT INTO User(firstName,lastName,email,password) VALUES($1,$2,$3,$4)", login.firstName, login.lastName, login.Email, login.Password)
-
-				peopleByte, _ := json.MarshalIndent(login, "", "\t")
+			if CheckEmail(login.Email) && valid.IsValid(w, r) {
+				db.Exec("INSERT INTO Userr(firstName,lastName,email,password) VALUES($1,$2,$3,$4)", login.FirstName, login.LastName, login.Email, login.Password)
+				peopleByte, _ := json.MarshalIndent(user, "", "\t")
 
 				w.Header().Set("Content-Type", "application/json")
 
 				w.Write(peopleByte)
 
 				defer db.Close()
+				_ = json.NewDecoder(r.Body).Decode(&login)
+				//login.Id = strconv.Itoa(rand.Intn(100000000)) // Mock ID - not safe
+				lg = append(lg, login)
+				json.NewEncoder(w).Encode(login)
 
-				valid.IsValid(w, r)
-				response = JsonResponse{Type: "success", Message: "The user has been inserted successfully!"}
-
+			} else {
+				fmt.Fprintln(w, "record failed error insert!! ")
 			}
 		}
+
 	}
-	json.NewEncoder(w).Encode(response)
+
 }
 func CheckEmail(mail string) bool {
 	match, _ := regexp.MatchString("[^@]+@[^@]+\\.[^@]+", mail)

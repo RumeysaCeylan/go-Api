@@ -12,7 +12,13 @@ import (
 )
 
 func main() {
-	// Init the mux router
+
+	/*user := login.User{
+		FirstName: "merve",
+		LastName:  "Ceylan",
+		Email:     "merveceylan@hotmail.com",
+		Password:  "12345",
+	}*/
 	router := mux.NewRouter()
 
 	// Route handles & endpoints
