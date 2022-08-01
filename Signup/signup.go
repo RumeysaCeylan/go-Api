@@ -68,7 +68,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 				defer db.Close()
 				_ = json.NewDecoder(r.Body).Decode(&login)
-				//login.Id = strconv.Itoa(rand.Intn(100000000)) // Mock ID - not safe
+
 				lg = append(lg, login)
 				json.NewEncoder(w).Encode(login)
 

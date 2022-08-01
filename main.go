@@ -17,10 +17,10 @@ func main() {
 
 	// Route handles & endpoints
 
-	// Get all movies
+	// Get all users
 	router.HandleFunc("/login", login.Login).Methods("GET")
 
-	// Create a movie
+	// Create a user
 	router.HandleFunc("/signup", signup.Signup).Methods("POST")
 	fmt.Println("Server at 8000")
 

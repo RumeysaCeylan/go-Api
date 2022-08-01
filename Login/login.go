@@ -32,25 +32,30 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	db := openConnention
 	defer db.Close()
 	r.ParseForm()
-	_firstName := r.FormValue("firstName")
-	_lastname := r.FormValue("lastName")
+
 	_password := r.FormValue("password")
 	_email := r.FormValue("email")
 	rows, _ := db.Query("SELECT * FROM Userr")
+	w.Header().Set("Content-Type", "application/json")
+	//params := mux.Vars(r) // Gets params
 	for rows.Next() {
 		rows.Scan(&user.Id, &user.FirstName, &user.LastName, user.Email, user.Password)
 		users = append(users, user)
 
 	}
-	//for _, item := range users {
-	if _email == user.Email && _password == user.Password {
-		fmt.Fprintf(w, "Login successful\n")
-		fmt.Fprintln(w, "Hello", _firstName+" "+_lastname)
-		peopleByte, _ := json.MarshalIndent(users, "", "\t")
-		w.Write(peopleByte)
-		//json.NewEncoder(w).Encode(item)
-		return
+	for _, item := range users {
+		if _email == item.Email || _password == item.Password {
+
+			//if string(item.Id) == params["id"] {
+			fmt.Fprintf(w, "Login successful\n")
+
+			//peopleByte, _ := json.MarshalIndent(user, "", "\t")
+			//w.Write(peopleByte)
+			json.NewEncoder(w).Encode(users)
+			return
+			//}
+
+		}
 	}
-	//}
 	//json.NewEncoder(w).Encode(&User{})
 }
