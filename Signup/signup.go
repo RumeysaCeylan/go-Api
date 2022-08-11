@@ -14,11 +14,11 @@ import (
 //var firstname, lastname, email, password string
 
 type User struct {
-	Id        int    `json:"id"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
+	Id        int
+	FirstName string
+	LastName  string
+	Email     string
+	Password  string
 }
 
 type Login struct {
@@ -59,7 +59,7 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 
 		} else {
 			if CheckEmail(login.Email) && valid.IsValid(w, r) {
-				db.Exec("INSERT INTO Userr(firstName,lastName,email,password) VALUES($1,$2,$3,$4)", login.FirstName, login.LastName, login.Email, login.Password)
+				db.Exec("INSERT INTO Userr(firstname,lastname,email,password) VALUES($1,$2,$3,$4)", login.FirstName, login.LastName, login.Email, login.Password)
 				peopleByte, _ := json.MarshalIndent(user, "", "\t")
 
 				w.Header().Set("Content-Type", "application/json")
