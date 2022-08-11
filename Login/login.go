@@ -36,8 +36,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	//_firstName := r.FormValue("firstName")
 	//_lastName := r.FormValue("lastName")
-	_password := "12345"                //r.FormValue("password")
-	_email := "rumeysaceylan@gmail.com" //r.FormValue("email")
+	_password := r.FormValue("password")
+	_email := r.FormValue("email")
 	rows, err := db.Query("SELECT * FROM Userr")
 	if err != nil {
 		if err == sql.ErrNoRows {
