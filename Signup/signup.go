@@ -67,10 +67,10 @@ func Signup(w http.ResponseWriter, r *http.Request) {
 				w.Write(peopleByte)
 
 				defer db.Close()
-				_ = json.NewDecoder(r.Body).Decode(&login)
+				//_ = json.NewDecoder(r.Body).Decode(&login)
 
 				lg = append(lg, login)
-				json.NewEncoder(w).Encode(login)
+				//json.NewEncoder(w).Encode(login)
 
 			} else {
 				fmt.Fprintln(w, "record failed error insert!! ")

@@ -20,6 +20,7 @@ type User struct {
 }
 
 type JsonResponse struct {
+	Status  int    `json:"status"`
 	Data    []User `json:"data"`
 	Message string `json:"message"`
 }
@@ -29,7 +30,7 @@ var jsonresp JsonResponse
 
 func Login(w http.ResponseWriter, r *http.Request) {
 	openConnention := postgresql.OpenConnention()
-
+	r.ParseForm()
 	var users []User
 	db := openConnention
 
@@ -58,43 +59,41 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 		users = append(users, user)
-		fmt.Println(user.FirstName + " " + user.Email + " " + user.Password)
 
 	}
+	jsonresp.Message = "Login failed"
+	jsonresp.Status = 0
 	for i := 0; i < len(users); i++ {
 		if _email == users[i].Email && _password == users[i].Password {
 
-			fmt.Println(users[i].Email + " " + users[i].Password)
 			jsonresp.Data = append(jsonresp.Data, users[i])
 			jsonresp.Message = "Login successful"
-			json.NewEncoder(w).Encode(jsonresp)
+			jsonresp.Status = 1
+
 			//json.NewEncoder(w).Encode(users)
-			return
-		} else {
-			jsonresp.Message = "Login failed"
-			json.NewEncoder(w).Encode(jsonresp)
-			fmt.Fprintf(w, "Failed login\n")
 			break
 		}
 	}
-	/*for _, item := range users {
-		if _email == item.Email || _password == item.Password {
+	json.NewEncoder(w).Encode(jsonresp.Data)
 
-			//if string(item.Id) == params["id"] {
-			fmt.Fprintf(w, "Login successful\n")
-			fmt.Println(_firstName + " " + _lastName)
-			//peopleByte, _ := json.MarshalIndent(user, "", "\t")
-			//w.Write(peopleByte)
-			jsonresp.Data = append(jsonresp.Data, item)
-			jsonresp.Message = "Login successful"
-			json.NewEncoder(w).Encode(jsonresp)
-			//json.NewEncoder(w).Encode(users)
-			return
-			//}
-
-		} else {
-			fmt.Fprintf(w, "Failed login\n")
-		}
-	}*/
-	//json.NewEncoder(w).Encode(&User{})
 }
+
+/*for _, item := range users {
+	if _email == item.Email || _password == item.Password {
+
+		//if string(item.Id) == params["id"] {
+		fmt.Fprintf(w, "Login successful\n")
+		fmt.Println(_firstName + " " + _lastName)
+		//peopleByte, _ := json.MarshalIndent(user, "", "\t")
+		//w.Write(peopleByte)
+		jsonresp.Data = append(jsonresp.Data, item)
+		jsonresp.Message = "Login successful"
+		json.NewEncoder(w).Encode(jsonresp)
+		//json.NewEncoder(w).Encode(users)
+		return
+		//}
+
+	} else {
+		fmt.Fprintf(w, "Failed login\n")
+	}
+}*/ //json.NewEncoder(w).Encode(&User{})

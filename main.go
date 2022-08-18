@@ -4,25 +4,23 @@ import (
 	"fmt"
 	login "golib/Login"
 	signup "golib/Signup"
-	"log"
 	"net/http"
 
-	"github.com/gorilla/mux"
 	_ "github.com/lib/pq"
 )
 
 func main() {
 
-	router := mux.NewRouter()
+	router := http.NewServeMux()
 
 	// Route handles & endpoints
 
 	// Get all users
-	router.HandleFunc("/login", login.Login).Methods("GET")
+	router.HandleFunc("/login", login.Login)
 
 	// Create a user
-	router.HandleFunc("/signup", signup.Signup).Methods("POST")
+	router.HandleFunc("/signup", signup.Signup)
 	fmt.Println("Server at 8000")
 
-	log.Fatal(http.ListenAndServe(":8000", router))
+	http.ListenAndServe(":8000", router)
 }
