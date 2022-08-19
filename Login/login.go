@@ -35,8 +35,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	db := openConnention
 
 	r.ParseForm()
-	//_firstName := r.FormValue("firstName")
-	//_lastName := r.FormValue("lastName")
+
 	_password := r.FormValue("password")
 	_email := r.FormValue("email")
 	rows, err := db.Query("SELECT * FROM Userr")
@@ -74,7 +73,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	json.NewEncoder(w).Encode(jsonresp.Data)
+	json.NewEncoder(w).Encode(jsonresp.Message)
 
 }
 
